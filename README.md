@@ -88,16 +88,4 @@ This project is licensed under the MIT License.
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-```plaintext
-
-Now you can try publishing again. The README.md file provides:
-
-1. Installation instructions
-2. Quick start guide
-3. Feature overview
-4. API reference
-5. License information
-6. Contributing guidelines
-
-Try running `cargo publish` again and it should work now. Would you like me to add any additional sections to the README or make any modifications?
 ```
