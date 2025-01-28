@@ -1,4 +1,4 @@
-### Langfuse Rust
+# Langfuse Rust
 
 ## Quick Start
 
