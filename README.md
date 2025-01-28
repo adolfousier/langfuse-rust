@@ -1,8 +1,4 @@
-Let's create a README.md file for the crate. This is required for publishing and will help users understand how to use the library.
-
-```markdown project="langfuse-rs" file="README.md"
-...
-```
+### Langfuse Rust
 
 ## Quick Start
 
