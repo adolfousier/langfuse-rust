@@ -37,7 +37,7 @@ tokio = { version = "1.0", features = ["full"] }
 Basic example:
 
 ```rust
-use langfuse_tracker::{LangFuseConfig, send_interaction};
+use langfuse::{LangFuseConfig, send_interaction};
 
 #[tokio::main]
 async fn main() {

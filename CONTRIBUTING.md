@@ -25,7 +25,7 @@ Thank you for your interest in contributing to the langfuse_tracker project! Thi
 
 2. Clone your fork locally:
    ```bash
-   git clone https://github.com/YOUR-USERNAME/langfuse-rust.git
+   git clone https://github.com/YOUR_GB_USERNAME/langfuse-rust.git
    cd langfuse-rust
    ```
 

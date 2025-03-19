@@ -1,5 +1,5 @@
 [package]
-name = "langfuse-rust"
+name = "langfuse"
 version = "0.1.0"
 edition = "2024"
 authors = ["Adolfo Usier <adolfousier@gmail.com>"]
