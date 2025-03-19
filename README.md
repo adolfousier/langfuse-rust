@@ -1,6 +1,6 @@
 # langfuse_tracker
 
-[![Crates.io](https://img.shields.io/crates/v/langfuse_tracker.svg)](https://crates.io/crates/langfuse-rust)
+[![Crates.io](https://img.shields.io/crates/v/langfuse.svg)](https://crates.io/crates/langfuse)
 [![Documentation](https://docs.rs/langfuse_tracker/badge.svg)](https://docs.rs/langfuse-rust)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
