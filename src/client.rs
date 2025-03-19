@@ -1,175 +1,120 @@
 // src/client.rs
-use crate::{types::*, error::LangfuseError};
-use async_trait::async_trait;
-use chrono::{DateTime, Utc};
-use log::{debug, error, info};
-use reqwest::Client;
-use serde_json::Value;
-use std::env;
-use uuid::Uuid;
+use super::{
+    error::LangFuseTrackerError,
+    types::{LangFuseConfig, InteractionMetadata},
+};
+use base64::engine::general_purpose::STANDARD;
+use base64::Engine;
+use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, CONTENT_TYPE};
+use serde_json::json;
+use log::{debug, error};
+use chrono::Utc;
 
-#[async_trait]
-pub trait LangfuseApi {
-    async fn track_span(
-        &self,
-        name: &str,
-        trace_id: Option<String>,
-        start_time: DateTime<Utc>,
-        end_time: DateTime<Utc>,
-        level: ObservationLevel,
-        metadata: Option<Value>,
-        input: Option<Value>,
-        output: Option<Value>,
-        parent_observation_id: Option<String>,
-        version: Option<String>,
-    ) -> Result<(), LangfuseError>;
+pub async fn send_interaction(
+    config: &LangFuseConfig,
+    request_id: &str,
+    user_id: Option<&str>,
+    session_id: Option<&str>,
+    input: &str,
+    output: &str,
+    raw_response: Option<&str>,
+    processing_time_ms: u128,
+    is_error: bool,
+    model_name: Option<&str>,
+    tokens_used: Option<u32>,
+    trace_name: Option<&str>,
+) -> Result<(), LangFuseTrackerError> {
+    let client = reqwest::Client::new();
+    let mut headers = HeaderMap::new();
+
+    let auth_string = format!("{}:{}", config.public_key, config.secret_key);
+    let auth_header = format!("Basic {}", STANDARD.encode(auth_string));
     
-    async fn create_trace(
-        &self,
-        name: &str,
-        metadata: Option<Value>,
-    ) -> Result<String, LangfuseError>;
-}
+    headers.insert(
+        AUTHORIZATION,
+        HeaderValue::from_str(&auth_header)?,
+    );
+    headers.insert(CONTENT_TYPE, HeaderValue::from_static("application/json"));
 
-pub struct LangfuseClient {
-    client: Client,
-    base_url: String,
-    public_key: String,
-    secret_key: String,
-}
-
-impl LangfuseClient {
-    pub fn new() -> Result<Self, LangfuseError> {
-        let base_url = env::var("LANGFUSE_BASE_URL")
-            .map_err(|_| LangfuseError::EnvError("LANGFUSE_BASE_URL".to_string()))?;
-            
-        let public_key = env::var("LANGFUSE_PUBLIC_KEY")
-            .map_err(|_| LangfuseError::EnvError("LANGFUSE_PUBLIC_KEY".to_string()))?;
-            
-        let secret_key = env::var("LANGFUSE_SECRET_KEY")
-            .map_err(|_| LangfuseError::EnvError("LANGFUSE_SECRET_KEY".to_string()))?;
-
-        Ok(Self {
-            client: Client::new(),
-            base_url,
-            public_key,
-            secret_key,
-        })
-    }
+    let now = Utc::now();
+    let event_id = format!("{}-event", request_id);
     
-    pub fn with_credentials(
-        base_url: String,
-        public_key: String,
-        secret_key: String,
-    ) -> Self {
-        Self {
-            client: Client::new(),
-            base_url,
-            public_key,
-            secret_key,
-        }
-    }
-}
+    let trace_name = trace_name.unwrap_or("neura_rda_user_interaction");
 
-#[async_trait]
-impl LangfuseApi for LangfuseClient {
-    async fn track_span(
-        &self,
-        name: &str,
-        trace_id: Option<String>,
-        start_time: DateTime<Utc>,
-        end_time: DateTime<Utc>,
-        level: ObservationLevel,
-        metadata: Option<Value>,
-        input: Option<Value>,
-        output: Option<Value>,
-        parent_observation_id: Option<String>,
-        version: Option<String>,
-    ) -> Result<(), LangfuseError> {
-        let event = LangfuseEvent {
-            event_type: EventType::SpanCreate,
-            id: Uuid::new_v4().to_string(),
-            timestamp: Utc::now(),
-            metadata: None,
-            body: EventBody::Span(SpanBody {
-                id: Some(Uuid::new_v4().to_string()),
-                trace_id,
-                name: Some(name.to_string()),
-                start_time,
-                end_time: Some(end_time),
-                metadata,
-                input,
-                output,
-                level,
-                status_message: None,
-                parent_observation_id,
-                version,
-            }),
-        };
-        self.send_batch(vec![event]).await
-    }
+    let metadata = InteractionMetadata::new(
+        processing_time_ms,
+        is_error,
+        model_name,
+        tokens_used,
+        raw_response,
+    );
 
-    async fn create_trace(
-        &self,
-        name: &str,
-        metadata: Option<Value>,
-    ) -> Result<String, LangfuseError> {
-        let trace_id = Uuid::new_v4().to_string();
-        let event = LangfuseEvent {
-            event_type: EventType::TraceCreate,
-            id: Uuid::new_v4().to_string(),
-            timestamp: Utc::now(),
-            metadata: None,
-            body: EventBody::Trace(TraceBody {
-                id: Some(trace_id.clone()),
-                name: Some(name.to_string()),
-                timestamp: Some(Utc::now()),
-                metadata,
-                user_id: None,
-                session_id: None,
-                version: None,
-                public: None,
-                // Added missing required fields
-                input: None,
-                output: None,
-                release: None,
-                tags: None,
-            }),
-        };
-        self.send_batch(vec![event]).await?;
-        Ok(trace_id)
-    }
-}
-
-impl LangfuseClient {
-    async fn send_batch(&self, batch: Vec<LangfuseEvent>) -> Result<(), LangfuseError> {
-        let response = self.client
-            .post(format!("{}/api/public/ingestion", self.base_url))
-            .basic_auth(&self.public_key, Some(&self.secret_key))
-            .json(&serde_json::json!({ "batch": batch }))
-            .send()
-            .await?;
-
-        let status = response.status();
-        
-        if status.is_success() || status.as_u16() == 207 {
-            let response_body: Value = response.json().await?;
-            
-            if let Some(errors) = response_body.get("errors").and_then(|e| e.as_array()) {
-                if !errors.is_empty() {
-                    return Err(LangfuseError::ApiError {
-                        status_code: 207,
-                        message: format!("Batch partially failed: {:?}", errors),
-                    });
-                }
+    let batch_payload = json!({
+        "batch": [{
+            "id": event_id,
+            "timestamp": now.to_rfc3339(),
+            "type": "trace-create",
+            "body": {
+                "id": request_id,
+                "timestamp": now.to_rfc3339(),
+                "name": trace_name,
+                "userId": user_id.unwrap_or_default(),
+                "sessionId": session_id.unwrap_or_default(),
+                "input": input,
+                "output": output,
+                "metadata": metadata,
+                "observations": [
+                    {
+                        "type": "generation",
+                        "id": format!("{}-generation", request_id),
+                        "startTime": now.checked_sub_signed(chrono::Duration::milliseconds(processing_time_ms as i64))
+                            .unwrap_or(now)
+                            .to_rfc3339(),
+                        "endTime": now.to_rfc3339(),
+                        "model": model_name.unwrap_or("unknown").to_string(),
+                        "input": input,
+                        "output": output,
+                        "metadata": {
+                            "request_id": request_id,
+                            "latency_ms": processing_time_ms,
+                            "tokens": tokens_used,
+                            "raw_response": raw_response
+                        }
+                    }
+                ]
             }
-            
+        }]
+    });
+
+    let langfuse_url = format!(
+        "{}/api/public/ingestion",
+        config.base_url.trim_end_matches('/')
+    );
+
+    debug!("Langfuse URL: {}", langfuse_url);
+    debug!("Sending trace payload: {}", serde_json::to_string_pretty(&batch_payload).unwrap());
+
+    let response = client
+        .post(&langfuse_url)
+        .headers(headers)
+        .json(&batch_payload)
+        .send()
+        .await?;
+
+    match response.status() {
+        status if status.is_success() => {
+            debug!("Successfully sent trace to Langfuse for request_id: {}", request_id);
             Ok(())
-        } else {
-            Err(LangfuseError::ApiError {
-                status_code: status.as_u16(),
-                message: format!("Request failed: {}", status),
-            })
+        },
+        status if status.as_u16() == 207 => {
+            let error_text = response.text().await?;
+            error!("Langfuse partial success with errors: {}", error_text);
+            Err(LangFuseTrackerError::unknown(error_text))
+        },
+        _ => {
+            let error_text = response.text().await?;
+            error!("Langfuse API error: {}", error_text);
+            Err(LangFuseTrackerError::unknown(error_text))
         }
     }
 }

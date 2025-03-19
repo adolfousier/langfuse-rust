@@ -1,11 +1,11 @@
 [package]
 name = "langfuse-rust"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 authors = ["Adolfo Usier <adolfousier@gmail.com>"]
 description = "A Rust client for the Langfuse observability platform"
 license = "MIT"
-repository = "https://github.com/yourusername/langfuse-rust"
+repository = "https://github.com/adolfousier/langfuse-rust"
 documentation = "https://docs.rs/langfuse-rust"
 readme = "README.md"
 keywords = ["langfuse", "observability", "tracing", "monitoring", "llm"]
@@ -13,15 +13,12 @@ categories = ["development-tools", "api-bindings"]
 
 [dependencies]
 reqwest = { version = "0.11", features = ["json"] }
-tokio = { version = "1.0", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-chrono = { version = "0.4", features = ["serde"] }
-uuid = { version = "1.0", features = ["v4", "serde"] }
 log = "0.4"
+chrono = "0.4"
+base64 = "0.22.1"
 thiserror = "1.0"
-async-trait = "0.1"
 
 [dev-dependencies]
-tokio-test = "0.4"
-pretty_env_logger = "0.4"
+tokio = { version = "1.0", features = ["full"] }
