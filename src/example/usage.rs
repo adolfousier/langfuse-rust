@@ -1,5 +1,5 @@
 // examples/usage.rs
-use langfuse_tracker::{LangFuseConfig, send_interaction};
+use langfuse::{LangFuseConfig, send_interaction};
 use chrono::Utc;
 use std::error::Error;
 

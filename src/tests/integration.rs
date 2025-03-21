@@ -3,7 +3,7 @@ pub async fn test_send_interaction_success() {
     let config = LangFuseConfig::new(
         "test-public-key",
         "test-secret-key",
-        "http://localhost:9090",
+        "https://cloud.langfuse.com",
     );
 
     let result = send_interaction(
