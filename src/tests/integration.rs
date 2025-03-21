@@ -3,7 +3,7 @@ pub async fn test_send_interaction_success() {
     let config = LangFuseConfig::new(
         "test-public-key",
         "test-secret-key",
-        "http://localhost:8080",
+        "http://localhost:9090",
     );
 
     let result = send_interaction(
@@ -29,7 +29,7 @@ pub async fn test_send_interaction_error() {
     let config = LangFuseConfig::new(
         "invalid-public-key",
         "invalid-secret-key",
-        "http://localhost:8080",
+        "http://localhost:9090",
     );
 
     let result = send_interaction(
