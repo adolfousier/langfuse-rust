@@ -1,6 +1,6 @@
-# Contributing to langfuse_tracker
+# Contributing to langfuse-rust
 
-Thank you for your interest in contributing to the langfuse_tracker project! This document provides guidelines and instructions to help you get started.
+Thank you for your interest in contributing to the langfuse-rust project! This document provides guidelines and instructions to help you get started.
 
 ## Code of Conduct
 
