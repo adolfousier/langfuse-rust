@@ -4,7 +4,7 @@
 [![Documentation](https://docs.rs/langfuse_tracker/badge.svg)](https://docs.rs/langfuse-rust)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A Rust client for tracking interactions with LangFuse, the open-source LLM observability platform.
+A simple Rust client for tracking interactions with LangFuse, the open-source LLM observability platform.
 
 ## Features
 

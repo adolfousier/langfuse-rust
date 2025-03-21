@@ -39,7 +39,7 @@ pub async fn send_interaction(
     let now = Utc::now();
     let event_id = format!("{}-event", request_id);
     
-    let trace_name = trace_name.unwrap_or("neura_rda_user_interaction");
+    let trace_name = trace_name.unwrap_or("your_app_user_interaction");
 
     let metadata = InteractionMetadata::new(
         processing_time_ms,

@@ -29,7 +29,7 @@ pub async fn test_send_interaction_error() {
     let config = LangFuseConfig::new(
         "invalid-public-key",
         "invalid-secret-key",
-        "http://localhost:9090",
+        "https://cloud.langfuse.com",
     );
 
     let result = send_interaction(
