@@ -22,7 +22,6 @@ pub async fn send_interaction(
     processing_time_ms: u128,
     is_error: bool,
     model_name: Option<&str>,
-    tokens_used: Option<u32>,
     token_usage: Option<TokenUsage>,
     trace_name: Option<&str>,
 ) -> Result<(), LangFuseTrackerError> {
@@ -43,12 +42,14 @@ pub async fn send_interaction(
     
     let trace_name = trace_name.unwrap_or("your_app_user_interaction");
 
+    // Create a local token_usage variable to avoid cloning
+    let token_usage_local = token_usage;
+    
     let metadata = InteractionMetadata::new(
         processing_time_ms,
         is_error,
         model_name,
-        tokens_used,
-        token_usage,
+        token_usage_local.as_ref(),
         raw_response,
     );
 
@@ -80,7 +81,13 @@ pub async fn send_interaction(
                         "metadata": {
                             "request_id": request_id,
                             "latency_ms": processing_time_ms,
-                            "tokens": tokens_used,
+                            "token_usage": token_usage_local.as_ref().map(|t| {
+                                json!({
+                                    "input_tokens": t.input_tokens,
+                                    "output_tokens": t.output_tokens,
+                                    "total_tokens": t.total_tokens
+                                })
+                            }),
                             "raw_response": raw_response
                         }
                     }

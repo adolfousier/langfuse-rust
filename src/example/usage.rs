@@ -26,15 +26,15 @@ async fn main() -> Result<(), Box<dyn Error>> {
         "Hello, who are you?",  // Input text from the user
         "I'm an AI assistant, ready to help you",           // Output response
         "here should be full raw response",                         // No raw response included
-        100,                          // Processing time in milliseconds
+        6500,                          // Processing time in milliseconds
         false,                        // Indicates the request was successful (not an error), if tracking error this must be true
         Some("model-x"),               // Optional name of the model used
-        Some(1000),
-        Some(TokenUsage {
+        Some(TokenUsage {               
             input_tokens: 200,
             output_tokens: 800,
-        }),                    // Optional total number of tokens used
-        Some("json_endpoint_request_trace"),                         // Custom trace name provided
+            total_tokens: 1000,
+        }),                                         // Optional detailed token usage
+        Some("json_endpoint_request_trace"),              // Custom trace name provided
     ).await;
 
     // Step 3: Handle the result to check if the interaction was successfully tracked
@@ -55,13 +55,13 @@ async fn main() -> Result<(), Box<dyn Error>> {
         "Invalid input",
         "Request failed due to invalid input",
         None,
-        200,
+        3200,
         true,  // Set to true to indicate an error
         Some("model-y"),
-        Some(500),
         Some(TokenUsage {
             input_tokens: 50,
             output_tokens: 450,
+            total_tokens: 500,
         }),
         Some("error-handling"),  // Custom trace name for error tracking
     ).await;
@@ -83,11 +83,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
         150,
         false,
         Some("model-z"),
-        Some(750),
         Some(TokenUsage {
             input_tokens: 150,
             output_tokens: 600,
-
+            total_tokens: 750,
         }),
         Some("weather-forecast"),  // Custom trace name for weather forecasts
     ).await;
@@ -106,7 +105,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         "Hello, world!",
         "Hello from LangFuse!",
         None,
-        50,
+        5340,
         false,
         None,  // No model name
         None,  // No token count
@@ -128,10 +127,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
         "Invalid request format",
         "Request could not be processed",
         None,
-        300,
+        5300,
         true,  // Set to true to indicate an error
         Some("model-a"),
-        Some(250),
         Some(TokenUsage {
             input_tokens: 50,
             output_tokens: 200,
@@ -154,10 +152,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
         "What is the latest news?",
         "Streaming news updates...",
         None,
-        400,
+        2400,
         false,
         Some("model-b"),
-        Some(1000),
         Some(TokenUsage {
             input_tokens: 200,
             output_tokens: 800,
@@ -180,10 +177,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
         "Processing your request...",
         "Request completed successfully",
         None,
-        1000,
+        21000,
         false,
         Some("model-c"),
-        Some(2000),
         Some(TokenUsage {
             input_tokens: 500,
             output_tokens: 1500,
@@ -206,13 +202,13 @@ async fn main() -> Result<(), Box<dyn Error>> {
         "What is machine learning?",
         "Machine learning is the study of algorithms...",
         None,
-        250,
+        2250,
         false,
         Some("model-d"),
-        Some(1500),
         Some(TokenUsage {
             input_tokens: 300,
-            output_tokens: 1200
+            output_tokens: 1200,
+            total_tokens: 1500,
         }),
         Some("custom-metadata"),  
     ).await;

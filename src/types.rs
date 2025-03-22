@@ -18,10 +18,11 @@ impl LangFuseConfig {
     }
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize)]
 pub struct TokenUsage {
     pub input_tokens: u32,
     pub output_tokens: u32,
+    pub total_tokens: u32,
 }
 
 #[derive(Debug, Serialize)]
@@ -29,7 +30,6 @@ pub struct InteractionMetadata {
     pub processing_time_ms: u128,
     pub status: String,
     pub model: String,
-    pub tokens: Option<u32>,
     pub token_usage: Option<TokenUsage>,
     pub raw_response: Option<String>,
     pub timestamp_utc: String,
@@ -40,16 +40,14 @@ impl InteractionMetadata {
         processing_time_ms: u128,
         is_error: bool,
         model_name: Option<&str>,
-        tokens_used: Option<u32>,
-        token_usage: Option<TokenUsage>,
+        token_usage: Option<&TokenUsage>,
         raw_response: Option<&str>,
     ) -> Self {
         Self {
             processing_time_ms,
             status: if is_error { "error" } else { "success" }.to_string(),
             model: model_name.unwrap_or("unknown").to_string(),
-            tokens: tokens_used,
-            token_usage,
+            token_usage: token_usage.cloned(),
             raw_response: raw_response.map(|s| s.to_string()),
             timestamp_utc: Utc::now().to_rfc3339(),
         }

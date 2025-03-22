@@ -1,6 +1,6 @@
 [package]
 name = "langfuse"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2024"
 authors = ["Adolfo Usier <adolfousier@gmail.com>"]
 description = "A simple Rust client for the Langfuse.com observability platform"

@@ -2,7 +2,7 @@
 
 [![Crates.io](https://img.shields.io/crates/v/langfuse.svg)](https://crates.io/crates/langfuse)
 [![Documentation](https://docs.rs/langfuse/badge.svg)](https://docs.rs/langfuse)
-[![Github](https://github.com/adolfousier/langfuse-rust)](https://github.com/adolfousier/langfuse-rust)
+[![Github](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/adolfousier/langfuse-rust)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A non official open-source Rust client for tracking simple interactions with Langfuse (https://langfuse.com) the open-source LLM observability platform.
@@ -58,10 +58,10 @@ async fn main() {
         100, 
         false,
         Some("model-x"), 
-        Some(1000),                    // Total tokens used
         Some(TokenUsage {
             input_tokens: 100,
             output_tokens: 900,
+            total_tokens: 1000,
         }),                           // Detailed token usage
         Some("json_endpoint_request_trace"), 
     ).await;
@@ -107,7 +107,6 @@ pub async fn send_interaction(
     processing_time_ms: u128,
     is_error: bool,
     model_name: Option<&str>,
-    tokens_used: Option<u32>,
     token_usage: Option<TokenUsage>,
     trace_name: Option<&str>,
 ) -> Result<(), LangFuseTrackerError>;

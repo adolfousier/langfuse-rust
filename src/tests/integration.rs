@@ -6,6 +6,12 @@ pub async fn test_send_interaction_success() {
         "https://cloud.langfuse.com",
     );
 
+    let token_usage = TokenUsage {
+        input_tokens: 100,
+        output_tokens: 400,
+        total_tokens: 500
+    };
+
     let result = send_interaction(
         &config,
         "test-request",
@@ -17,7 +23,7 @@ pub async fn test_send_interaction_success() {
         50,
         false,
         Some("test-model"),
-        Some(500),
+        Some(token_usage),
         Some("trace-name"),
     ).await;
 
@@ -32,6 +38,12 @@ pub async fn test_send_interaction_error() {
         "https://cloud.langfuse.com",
     );
 
+    let token_usage = TokenUsage {
+        input_tokens: 200,
+        output_tokens: 800,
+        total_tokens: 1000
+    };
+
     let result = send_interaction(
         &config,
         "error-request",
@@ -43,8 +55,9 @@ pub async fn test_send_interaction_error() {
         100,
         true,
         Some("error-model"),
-        Some(1000),
-        Some("trace-name")    ).await;
+        Some(token_usage),
+        Some("trace-name")
+    ).await;
 
     assert!(result.is_err());
 }
