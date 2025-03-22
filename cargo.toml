@@ -8,7 +8,7 @@ license = "MIT"
 repository = "https://github.com/adolfousier/langfuse-rust"
 documentation = "https://docs.rs/langfuse"
 readme = "README.md"
-keywords = ["langfuse", "observability", "tracing", "monitoring", "llm", "AI"]
+keywords = ["langfuse", "observability", "tracing", "monitoring", "llm"]
 categories = ["development-tools", "api-bindings", "tracking-tools"]
 
 [dependencies]
