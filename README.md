@@ -7,8 +7,6 @@
 
 A non official open-source Rust client for tracking simple interactions with Langfuse (https://langfuse.com) the open-source LLM observability platform. 
 
-## Background
-
 This Rust crate has been serving as a critical component in Neura AI's backend infrastructure (https://meetneura.ai), adopted across more than 20 applications over the past 8 months. After repeatedly duplicating this crate across various projects, I've decided to share this crate with the amazing Rust community by publishing it on crates.io, empowering developers to effectively monitor and optimize their LLM-based applications.
 
 ## Features
