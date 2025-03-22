@@ -9,7 +9,7 @@ repository = "https://github.com/adolfousier/langfuse-rust"
 documentation = "https://docs.rs/langfuse"
 readme = "README.md"
 keywords = ["langfuse", "observability", "tracing", "monitoring", "llm"]
-categories = ["development-tools", "api-bindings", "tracking-tools"]
+categories = ["development-tools", "api-bindings", "development-tools::debugging"]
 
 [dependencies]
 reqwest = { version = "0.11", features = ["json"] }
