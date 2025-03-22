@@ -18,7 +18,7 @@ impl LangFuseConfig {
     }
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct TokenUsage {
     pub input_tokens: u32,
     pub output_tokens: u32,

@@ -1,4 +1,4 @@
-# langfuse Rust Client
+# Langfuse Rust Client
 
 [![Crates.io](https://img.shields.io/crates/v/langfuse.svg)](https://crates.io/crates/langfuse)
 [![Documentation](https://docs.rs/langfuse/badge.svg)](https://docs.rs/langfuse)
@@ -7,7 +7,7 @@
 
 A non official open-source Rust client for tracking simple interactions with Langfuse (https://langfuse.com) the open-source LLM observability platform. 
 
-This Rust crate has been serving as a critical component in Neura AI's backend infrastructure (https://meetneura.ai), adopted across more than 20 applications over the past 8 months. After repeatedly duplicating this crate, I've decided to share with the amazing Rust community, empowering developers to effectively monitor and optimize their LLM-based applications.
+This Rust crate has been serving as a critical component in Neura AI's backend infrastructure (https://meetneura.ai), adopted across more than 20 applications over the past 8 months. After repeatedly duplicating it, I've decided to share with the amazing Rust community, empowering developers to effectively monitor and optimize their LLM-based applications.
 
 ## Features
 
@@ -64,7 +64,7 @@ async fn main() {
             input_tokens: 100,
             output_tokens: 900,
             total_tokens: 1000,
-        }),                           // Detailed token usage
+        }),
         Some("json_endpoint_request_trace"), 
     ).await;
 
