@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
 use chrono::Utc;
 
 #[derive(Debug, Clone, Serialize)]
