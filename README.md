@@ -5,7 +5,11 @@
 [![Github](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/adolfousier/langfuse-rust)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A non official open-source Rust client for tracking simple interactions with Langfuse (https://langfuse.com) the open-source LLM observability platform.
+A non official open-source Rust client for tracking simple interactions with Langfuse (https://langfuse.com) the open-source LLM observability platform. 
+
+## Background
+
+This Rust crate has been serving as a critical component in Neura AI's backend infrastructure (https://meetneura.ai), adopted across more than 20 applications over the past 8 months. After repeatedly duplicating this crate across various projects, I've decided to share this crate with the amazing Rust community by publishing it on crates.io, empowering developers to effectively monitor and optimize their LLM-based applications.
 
 ## Features
 
@@ -29,7 +33,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-Langfuse = "0.1.4"
+Langfuse = "0.1.5"
 ```
 
 ## Usage
