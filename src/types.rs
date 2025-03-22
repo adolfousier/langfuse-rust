@@ -1,7 +1,7 @@
 use serde::Serialize;
 use chrono::Utc;
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize)]
 pub struct LangFuseConfig {
     pub public_key: String,
     pub secret_key: String,

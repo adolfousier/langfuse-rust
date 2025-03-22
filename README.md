@@ -29,7 +29,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-Langfuse = "0.1.2"
+Langfuse = "0.1.4"
 ```
 
 ## Usage
