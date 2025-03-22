@@ -1,10 +1,11 @@
-# langfuse_tracker
+# langfuse Rust Client
 
 [![Crates.io](https://img.shields.io/crates/v/langfuse.svg)](https://crates.io/crates/langfuse)
 [![Documentation](https://docs.rs/langfuse/badge.svg)](https://docs.rs/langfuse)
+[![Github](https://github.com/adolfousier/langfuse-rust)](https://github.com/adolfousier/langfuse-rust)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A simple Rust client for tracking interactions with LangFuse, the open-source LLM observability platform.
+A non official open-source Rust client for tracking simple interactions with Langfuse (https://langfuse.com) the open-source LLM observability platform.
 
 ## Features
 
@@ -12,24 +13,23 @@ A simple Rust client for tracking interactions with LangFuse, the open-source LL
 - Handle both successful and error cases
 - Configure LangFuse API settings
 - Support for custom trace names
+- Track tokens used and model name
+- Track processing time
 - Flexible metadata and observation tracking
 
 ## Installation
 
+Type this inside your project directory
+````
+cargo add langfuse
+````
+
+Or if you prefer to use a `Cargo.toml` file:
 Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-reqwest = { version = "0.11", features = ["json"] }
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-log = "0.4"
-chrono = "0.4"
-base64 = "0.22.1"
-thiserror = "1.0"
-
-[dev-dependencies]
-tokio = { version = "1.0", features = ["full"] }
+Langfuse = "0.1.2"
 ```
 
 ## Usage
@@ -49,17 +49,21 @@ async fn main() {
 
     let result = send_interaction(
         &config,
-        "request-123",
-        Some("user-1"),
+        "request-id-123",
+        Some("user-1"), 
         Some("session-1"),
-        "Hello, how can I help you?",
-        "I'm here to help!",
-        None,
-        100,
+        "Hello, who are you?", 
+        "I'm an AI assistant, ready to help you",
+        "here should be full raw response", 
+        100, 
         false,
-        Some("model-x"),
-        Some(1000),
-        None,
+        Some("model-x"), 
+        Some(1000),                    // Total tokens used
+        Some(TokenUsage {
+            input_tokens: 100,
+            output_tokens: 900,
+        }),                           // Detailed token usage
+        Some("json_endpoint_request_trace"), 
     ).await;
 
     match result {
@@ -104,8 +108,16 @@ pub async fn send_interaction(
     is_error: bool,
     model_name: Option<&str>,
     tokens_used: Option<u32>,
+    token_usage: Option<TokenUsage>,
     trace_name: Option<&str>,
 ) -> Result<(), LangFuseTrackerError>;
+
+// TokenUsage structure for detailed token tracking
+pub struct TokenUsage {
+    pub input_tokens: u32,
+    pub output_tokens: u32,
+    pub total_tokens: u32,
+}
 ```
 
 ### `LangFuseTrackerError`
@@ -135,8 +147,8 @@ langfuse_tracker/
 │   ├── types.rs
 │   └── utils/
 │       └── mod.rs
-├── examples/
-│   └── simple.rs
+├── example/
+│   └── usage.rs
 ├── tests/
 │   └── integration.rs
 ```
@@ -144,6 +156,7 @@ langfuse_tracker/
 ## Contributing
 
 Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+If you have any questions or suggestions, please contact open an issue or a pull request on https://github.com/adolfousier/langfuse-rust
 
 ## License
 

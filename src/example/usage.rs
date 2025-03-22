@@ -1,5 +1,5 @@
-// examples/usage.rs
-use langfuse::{LangFuseConfig, send_interaction};
+// example/usage.rs
+use langfuse::{LangFuseConfig, TokenUsage, send_interaction};
 use chrono::Utc;
 use std::error::Error;
 
@@ -8,7 +8,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     // Initialize logging for better debugging
     pretty_env_logger::init();
 
-    // Step 1: Configure the LangFuseTracker client with your credentials
+    // Step 1: Configure the LangFuse client with your credentials
     // Replace these with your actual LangFuse API credentials and instance URL
     let config = LangFuseConfig::new(
         "your-public-key",      // Your LangFuse public API key
@@ -20,17 +20,21 @@ async fn main() -> Result<(), Box<dyn Error>> {
     // This is a comprehensive example that demonstrates all available parameters
     let result = send_interaction(
         &config,                      // Configuration containing API credentials
-        "request-123",                // Unique identifier for the request
+        "request-id-123",                // Unique identifier for the request
         Some("user-1"),                // Optional user identifier
         Some("session-1"),            // Optional session identifier
-        "Hello, how can I help you?",  // Input text from the user
-        "I'm here to help!",           // Output response
-        None,                         // No raw response included
+        "Hello, who are you?",  // Input text from the user
+        "I'm an AI assistant, ready to help you",           // Output response
+        "here should be full raw response",                         // No raw response included
         100,                          // Processing time in milliseconds
-        false,                        // Indicates the request was successful (not an error)
+        false,                        // Indicates the request was successful (not an error), if tracking error this must be true
         Some("model-x"),               // Optional name of the model used
-        Some(1000),                    // Optional number of tokens used
-        None,                         // No custom trace name provided
+        Some(1000),
+        Some(TokenUsage {
+            input_tokens: 200,
+            output_tokens: 800,
+        }),                    // Optional total number of tokens used
+        Some("json_endpoint_request_trace"),                         // Custom trace name provided
     ).await;
 
     // Step 3: Handle the result to check if the interaction was successfully tracked
@@ -55,6 +59,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
         true,  // Set to true to indicate an error
         Some("model-y"),
         Some(500),
+        Some(TokenUsage {
+            input_tokens: 50,
+            output_tokens: 450,
+        }),
         Some("error-handling"),  // Custom trace name for error tracking
     ).await;
 
@@ -76,6 +84,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
         false,
         Some("model-z"),
         Some(750),
+        Some(TokenUsage {
+            input_tokens: 150,
+            output_tokens: 600,
+
+        }),
         Some("weather-forecast"),  // Custom trace name for weather forecasts
     ).await;
 
@@ -97,6 +110,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         false,
         None,  // No model name
         None,  // No token count
+        None,  // No detailed token usage
         None,  // No custom trace name
     ).await;
 
@@ -118,7 +132,12 @@ async fn main() -> Result<(), Box<dyn Error>> {
         true,  // Set to true to indicate an error
         Some("model-a"),
         Some(250),
-        Some("validation-error"),  // Custom trace name for validation errors
+        Some(TokenUsage {
+            input_tokens: 50,
+            output_tokens: 200,
+            total_tokens: 250,
+        }),
+        Some("validation-error"),  
     ).await;
 
     match result_error {
@@ -139,6 +158,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
         false,
         Some("model-b"),
         Some(1000),
+        Some(TokenUsage {
+            input_tokens: 200,
+            output_tokens: 800,
+            total_tokens: 1000,
+        }),
         Some("streaming-response"),  // Custom trace name for streaming responses
     ).await;
 
@@ -160,6 +184,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
         false,
         Some("model-c"),
         Some(2000),
+        Some(TokenUsage {
+            input_tokens: 500,
+            output_tokens: 1500,
+            total_tokens: 2000,
+        }),
         Some("long-running-operation"),  // Custom trace name for long operations
     ).await;
 
@@ -181,7 +210,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
         false,
         Some("model-d"),
         Some(1500),
-        Some("custom-metadata"),  // Custom trace name for requests with custom metadata
+        Some(TokenUsage {
+            input_tokens: 300,
+            output_tokens: 1200
+        }),
+        Some("custom-metadata"),  
     ).await;
 
     match result_custom {

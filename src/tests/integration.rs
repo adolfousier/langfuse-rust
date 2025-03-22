@@ -1,8 +1,8 @@
 #[tokio::test]
 pub async fn test_send_interaction_success() {
     let config = LangFuseConfig::new(
-        "test-public-key",
-        "test-secret-key",
+        "your-test-public-key",
+        "your-test-secret-key",
         "https://cloud.langfuse.com",
     );
 
@@ -11,14 +11,14 @@ pub async fn test_send_interaction_success() {
         "test-request",
         Some("test-user"),
         Some("test-session"),
-        "Test input",
-        "Test output",
+        "user query",
+        "ai response",
         None,
         50,
         false,
         Some("test-model"),
         Some(500),
-        None,
+        Some("trace-name"),
     ).await;
 
     assert!(result.is_ok());
@@ -37,15 +37,14 @@ pub async fn test_send_interaction_error() {
         "error-request",
         Some("error-user"),
         Some("error-session"),
-        "Error input",
-        "Error output",
+        "user query",
+        "Error response",
         None,
         100,
         true,
         Some("error-model"),
         Some(1000),
-        None,
-    ).await;
+        Some("trace-name")    ).await;
 
     assert!(result.is_err());
 }

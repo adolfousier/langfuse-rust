@@ -1,8 +1,9 @@
 // src/client.rs
 use super::{
     error::LangFuseTrackerError,
-    types::{LangFuseConfig, InteractionMetadata},
+    types::{LangFuseConfig, InteractionMetadata, TokenUsage},
 };
+
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, CONTENT_TYPE};
@@ -22,6 +23,7 @@ pub async fn send_interaction(
     is_error: bool,
     model_name: Option<&str>,
     tokens_used: Option<u32>,
+    token_usage: Option<TokenUsage>,
     trace_name: Option<&str>,
 ) -> Result<(), LangFuseTrackerError> {
     let client = reqwest::Client::new();
@@ -46,6 +48,7 @@ pub async fn send_interaction(
         is_error,
         model_name,
         tokens_used,
+        token_usage,
         raw_response,
     );
 
