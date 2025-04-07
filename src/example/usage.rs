@@ -5,8 +5,6 @@ use std::error::Error;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    // Initialize logging for better debugging
-    pretty_env_logger::init();
 
     // Step 1: Configure the LangFuse client with your credentials
     // Replace these with your actual LangFuse API credentials and instance URL

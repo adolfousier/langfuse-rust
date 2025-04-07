@@ -8,7 +8,6 @@ use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, CONTENT_TYPE};
 use serde_json::json;
-use log::{debug, error};
 use chrono::Utc;
 
 pub async fn send_interaction(
@@ -101,8 +100,6 @@ pub async fn send_interaction(
         config.base_url.trim_end_matches('/')
     );
 
-    debug!("Langfuse URL: {}", langfuse_url);
-    debug!("Sending trace payload: {}", serde_json::to_string_pretty(&batch_payload).unwrap());
 
     let response = client
         .post(&langfuse_url)
@@ -113,17 +110,14 @@ pub async fn send_interaction(
 
     match response.status() {
         status if status.is_success() => {
-            debug!("Successfully sent trace to Langfuse for request_id: {}", request_id);
             Ok(())
         },
         status if status.as_u16() == 207 => {
             let error_text = response.text().await?;
-            error!("Langfuse partial success with errors: {}", error_text);
             Err(LangFuseTrackerError::unknown(error_text))
         },
         _ => {
             let error_text = response.text().await?;
-            error!("Langfuse API error: {}", error_text);
             Err(LangFuseTrackerError::unknown(error_text))
         }
     }

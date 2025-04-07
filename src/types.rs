@@ -25,7 +25,7 @@ pub struct TokenUsage {
     pub total_tokens: u32,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct InteractionMetadata {
     pub processing_time_ms: u128,
     pub status: String,

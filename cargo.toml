@@ -1,6 +1,6 @@
 [package]
 name = "langfuse"
-version = "0.1.6"
+version = "0.1.7"
 edition = "2024"
 authors = ["Adolfo Usier <adolfousier@gmail.com>"]
 description = "A simple Rust client for the Langfuse.com observability platform by Neura AI"
@@ -15,11 +15,9 @@ categories = ["development-tools", "api-bindings", "development-tools::debugging
 reqwest = { version = "0.11", features = ["json"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-log = "0.4"
 chrono = "0.4"
 base64 = "0.22.1"
 thiserror = "1.0"
 
 [dev-dependencies]
 tokio = { version = "1.0", features = ["full"] }
-
